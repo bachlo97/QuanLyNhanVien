@@ -10,16 +10,45 @@ class EmployeesList {
   deleteEmployee(taiKhoan) {
     if (this.danhSachNhanVien.length === 0) return;
 
-    var newDSNV = this.danhSachNhanVien.filter(function (nv) {
+    var newDSNV = this.danhSachNhanVien.filter((nv) => {
       return !(nv.taiKhoan === taiKhoan);
     });
-    
+
     this.danhSachNhanVien = newDSNV;
   }
 
-  findEmployeeType() {}
+  findEmployeeAccout(taiKhoan) {
+    if (taiKhoan === undefined || taiKhoan === "") return; 
+    return this.danhSachNhanVien.find((nv) => {
+      return sv.taiKhoan === taiKhoan;
+    });
+  }
 
-  findEmployeeAccout() {}
+  findEmployeeType(loaiNV) { 
+    
+    if (loaiNV === undefined || loaiNV === "") {
+      return this.danhSachNhanVien;
+    }
+
+    let listNhanVien = this.danhSachNhanVien.filter((nv) => {
+      return nv.xepLoaiNhanVien.toLowerCase().includes(loaiNV.toLowerCase());
+    });
+
+    return listNhanVien;
+  }
+
+  updateEmployee(nv){
+    var index = this.danhSachNhanVien.findIndex((nhanVien) => {
+      // dựa vào mã sinh viên để tìm kiếm tại vì nó là duy nhất.
+      return nhanVien.taiKhoan === nv.taiKhoan;
+    });
+
+    // nếu như không tìm thấy. thì dừng function
+    if (index === -1) return;
+
+    // nếu như tìm thấy thì cập nhật giá trị của vị trí index
+    this.danhSachNhanVien[index] = nv;
+  }
 }
 
 export default EmployeesList;

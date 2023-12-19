@@ -115,7 +115,7 @@ export class Validator {
 
         let regexSalary = /^[1-9]\d*$/
 
-        if (regexSalary.test(this.value)) {
+        if (!regexSalary.test(this.value)) {
             this.message = message;
         }
         return this;
@@ -126,7 +126,7 @@ export class Validator {
 
         let regexHour = /^(?!\-)\d*\.?\d+$/;
 
-        if (regexHour.test(this.value)) {
+        if (!regexHour.test(this.value)) {
             this.message = message;
         }
         return this;

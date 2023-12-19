@@ -30,3 +30,7 @@
   cursor: pointer;
   margin-left: -25px;
 }
+
+.ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span{
+  background-color: black;
+}

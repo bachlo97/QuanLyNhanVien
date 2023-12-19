@@ -6,7 +6,8 @@ $( function() {
         buttonImageOnly: true,
         buttonText: "Select date",
         dateFormat: "mm/dd/yy",
-        minDate: new Date(2022, 0, 1)
+        minDate: new Date(2023, 0, 1),
+        maxDate: new Date(2023, 11,20)
 
     });
 } );

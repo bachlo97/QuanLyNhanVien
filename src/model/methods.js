@@ -1,4 +1,12 @@
-import { dsnv, touches, listEle, errors, validationMapper, mapper } from "../index.js";
+import {
+  dsnv,
+  touches,
+  listEle,
+  errors,
+  validationMapper,
+  mapper,
+  mapperEmployee
+} from "../index.js";
 // import EmployeesList from "./model/employees-list.js";
 // import Employee from "./model/employee.js";
 export function setTouches(value) {
@@ -50,7 +58,6 @@ function handleValidate(event) {
 }
 
 export function renderErrors() {
-  ;
   listEle.forEach(function (ele) {
     let thuocTinh = ele.id;
     let isShow = errors[thuocTinh] != undefined && touches[thuocTinh];
@@ -59,8 +66,8 @@ export function renderErrors() {
       // Dừng chạy hàm, không show message
       return;
     }
-    document.getElementById(mapper[thuocTinh]).innerHTML = errors[thuocTinh]
-    document.getElementById(mapper[thuocTinh]).style.display = 'block'
+    document.getElementById(mapper[thuocTinh]).innerHTML = errors[thuocTinh];
+    document.getElementById(mapper[thuocTinh]).style.display = "block";
   });
 }
 
@@ -79,15 +86,20 @@ export function handleBlur(event) {
   handleValidate(event);
   // Hiện errors mỗi khi người dùng blur khỏi ô input
   renderErrors();
-
 }
 
 // == Function Tạo mới nhân viên ==
 export function createNhanVien(nhanVien) {
   const { taiKhoan, email } = nhanVien;
 
-  if (dsnv.danhSachNhanVien.some(item => item.taiKhoan === taiKhoan || item.email === email)) {
-    alert('Tên tài khoản hoặc email đã bị trùng với người dùng khác. Vui lòng nhập lại.');
+  if (
+    dsnv.danhSachNhanVien.some(
+      (item) => item.taiKhoan === taiKhoan || item.email === email
+    )
+  ) {
+    alert(
+      "Tên tài khoản hoặc email đã bị trùng với người dùng khác. Vui lòng nhập lại."
+    );
   } else {
     dsnv.addEmployee(nhanVien);
   }
@@ -98,8 +110,6 @@ export function updateNhanVien(nhanVien) {
   // Đôi khi chúng ta mong muốn xử lý thêm logic
   dsnv.updateEmployee(nhanVien);
 
-  // Sau khi update xong thì chuyển trạng thái form về dạng create
-  isEdit = false;
 
   // Mở lại input msv cho người dùng nhập sau khi cập nhật
   var inp = document.querySelector("input#tknv");
@@ -137,14 +147,16 @@ export function renderTable(danhSachNhanVien) {
           <td>${nv.email}</td>
           <td>${nv.ngayLam}</td>
           <td>${nv.chucVu}</td>
-          <td>${new Intl.NumberFormat('vn-VN').format(nv.tongLuong)}</td>
+          <td>${new Intl.NumberFormat("vn-VN").format(nv.tongLuong)}</td>
           <td>${nv.xepLoaiNhanVien}</td>
         
           <td>
-              <button onclick="chinhSuaNhanVien('${nv.taiKhoan
-      }')" class="btn btn-warning">Sửa</button>
-              <button onclick="xoaNhanVien('${nv.taiKhoan
-      }')" class="btn btn-danger">Xóa</button>
+              <button id= btnSua${
+                nv.taiKhoan
+              } class="btn btn-warning" data-toggle='modal' data-target='#myModal'>Sửa</button>
+              <button onclick="xoaNhanVien('${
+                nv.taiKhoan
+              }')" class="btn btn-danger">Xóa</button>
           </td>
         </tr>
       `;
@@ -155,7 +167,6 @@ export function renderTable(danhSachNhanVien) {
   tbody.innerHTML = eleHtml;
 }
 
-
 export function init() {
   var danhSanhNhanVien = layDanhSachNhanVienLocal();
   dsnv.danhSachNhanVien = danhSanhNhanVien;
@@ -164,21 +175,30 @@ export function init() {
 
 export function chinhSuaNhanVien(taiKhoan) {
   let nhanVien = dsnv.findEmployeeAccout(taiKhoan);
-  document.getElementById('myModal').style.display = 'block'
   renderDuLieuLenForm(nhanVien);
 }
 
 function renderDuLieuLenForm(nv) {
   listEle.forEach(function (ele) {
-    var thuocTinh = mapper[ele.id];
+    var thuocTinh = mapperEmployee[ele.id];
 
     ele.value = nv[thuocTinh];
 
     // Chặn không cho phép người dùng chỉnh sửa maSinhVien.
-    if (ele.id === "tknv" || ele.id === 'email') {
+    if (ele.id === "tknv" || ele.id === "email") {
       ele.disabled = true;
     }
   });
 
-  isEdit = true;
+}
+
+export function addClickEventForEditBtn() {
+  if (dsnv.danhSachNhanVien.length == 0) return;
+  dsnv.danhSachNhanVien.forEach((item) => {
+    domId(`btnSua${item.taiKhoan}`).onclick = () => {
+      chinhSuaNhanVien(item.taiKhoan);
+      domId('btnThemNV').disabled = true
+      domId('password').type = 'text'
+    };
+  });
 }

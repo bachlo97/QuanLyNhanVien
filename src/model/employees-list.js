@@ -20,7 +20,7 @@ class EmployeesList {
   findEmployeeAccout(taiKhoan) {
     if (taiKhoan === undefined || taiKhoan === "") return; 
     return this.danhSachNhanVien.find((nv) => {
-      return sv.taiKhoan === taiKhoan;
+      return nv.taiKhoan === taiKhoan;
     });
   }
 

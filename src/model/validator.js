@@ -1,14 +1,13 @@
 
 function convertDay(dateString) {
-    const dateParts = dateString.split('/');
-    const month = +dateParts[0]
-    const day = +dateParts[1]
-    const year = +dateParts[2]
+    const [month, day, year] = dateString.split('/').map(Number);
     return new Date(year, month - 1, day);
 }
 
 function isValidDate(dateString) {
-    const dateObject = convertDay(dateString)
+    const dateObject = convertDay(dateString);
+    const [month, day, year] = dateString.split('/').map(Number);
+
     return (
         dateObject.getMonth() === month - 1 &&
         dateObject.getDate() === day &&
@@ -103,8 +102,8 @@ export class Validator {
         const minDate = new Date(2023, 0, 1); // Tháng bắt đầu từ 0
         const maxDate = new Date(2023, 11, 20);
         const inputDate = convertDay(this.value)
-
-        if (inputDate < minDate && inputDate > maxDate) {
+        
+        if (inputDate < minDate || inputDate > maxDate) {
             this.message = message;
         }
         return this;

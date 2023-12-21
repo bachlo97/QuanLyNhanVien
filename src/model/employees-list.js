@@ -39,7 +39,6 @@ class EmployeesList {
 
   updateEmployee(nv){
     var index = this.danhSachNhanVien.findIndex((nhanVien) => {
-      // dựa vào mã sinh viên để tìm kiếm tại vì nó là duy nhất.
       return nhanVien.taiKhoan === nv.taiKhoan;
     });
 

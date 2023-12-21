@@ -1,3 +1,4 @@
+import Employee from "./employee.js";
 import {
   dsnv,
   touches,
@@ -7,8 +8,7 @@ import {
   mapper,
   mapperEmployee
 } from "../index.js";
-// import EmployeesList from "./model/employees-list.js";
-// import Employee from "./model/employee.js";
+
 export function setTouches(value) {
   listEle.forEach((ele) => (touches[ele.id] = value));
 }
@@ -36,24 +36,23 @@ export function isValid() {
     });
     return false;
   }
-
   // TH2: Đã nhập đầy đủ
   // 1. Tất cả cả ô input đã từng đi qua
-  var isTouch = Object.values(touches).every(function (item) {
+  let isTouch = Object.values(touches).every(function (item) {
     return item;
   });
 
   // 2. Không được có message lỗi
-  var isMessage = Object.values(errors).every(function (item) {
+  let isMessage = Object.values(errors).every(function (item) {
     return item.length === 0;
   });
-
   return isTouch && isMessage;
 }
 
 function handleValidate(event) {
   const id = event.target.id;
   const value = event.target.value;
+  //! Phần được cộng điểm
   errors[id] = validationMapper[id](value);
 }
 
@@ -89,7 +88,7 @@ export function handleBlur(event) {
 }
 
 // == Function Tạo mới nhân viên ==
-export function createNhanVien(nhanVien) {
+export function addNhanVien(nhanVien) {
   const { taiKhoan, email } = nhanVien;
 
   if (
@@ -110,10 +109,6 @@ export function updateNhanVien(nhanVien) {
   // Đôi khi chúng ta mong muốn xử lý thêm logic
   dsnv.updateEmployee(nhanVien);
 
-
-  // Mở lại input msv cho người dùng nhập sau khi cập nhật
-  var inp = document.querySelector("input#tknv");
-  inp.disabled = false;
 }
 
 //* == LocalStorage
@@ -151,12 +146,10 @@ export function renderTable(danhSachNhanVien) {
           <td>${nv.xepLoaiNhanVien}</td>
         
           <td>
-              <button id= btnSua${
-                nv.taiKhoan
-              } class="btn btn-warning" data-toggle='modal' data-target='#myModal'>Sửa</button>
-              <button onclick="xoaNhanVien('${
-                nv.taiKhoan
-              }')" class="btn btn-danger">Xóa</button>
+              <button id= btnSua${nv.taiKhoan
+      } class="btn btn-warning" data-toggle='modal' data-target='#myModal'>Sửa</button>
+              <button id= btnXoa${nv.taiKhoan
+              } class="btn btn-danger">Xóa</button>
           </td>
         </tr>
       `;
@@ -178,6 +171,19 @@ export function chinhSuaNhanVien(taiKhoan) {
   renderDuLieuLenForm(nhanVien);
 }
 
+// == Xóa Sinh Viên ==
+export function xoaNhanVien(taiKhoan) {
+  dsnv.deleteEmployee(taiKhoan);
+
+  // render lại table
+  renderTable();
+
+  //Gắn lại sự kiện onclick cho nút xóa vì sau khi render lại table thì các nút xóa sẽ được làm mới => mất đi onclick
+  addClickEventForEditBtn()
+  // cập nhật lại storage
+  luuDanhSachNhanVienLocal();
+}
+
 function renderDuLieuLenForm(nv) {
   listEle.forEach(function (ele) {
     var thuocTinh = mapperEmployee[ele.id];
@@ -195,10 +201,35 @@ function renderDuLieuLenForm(nv) {
 export function addClickEventForEditBtn() {
   if (dsnv.danhSachNhanVien.length == 0) return;
   dsnv.danhSachNhanVien.forEach((item) => {
+
     domId(`btnSua${item.taiKhoan}`).onclick = () => {
       chinhSuaNhanVien(item.taiKhoan);
       domId('btnThemNV').disabled = true
+      domId("btnCapNhat").disabled = false;
       domId('password').type = 'text'
     };
+
+    domId(`btnXoa${item.taiKhoan}`).onclick = () =>{
+      xoaNhanVien(item.taiKhoan)
+    }
   });
 }
+
+
+export function createEmployee() {
+  let nv = {};
+  listEle.forEach((ele) => (nv[ele.id] = ele.value));
+  let { tknv, name, email, password, datepicker, luongCB, chucvu, gioLam } = nv;
+  let nhanVien = new Employee(
+    tknv,
+    name,
+    email,
+    password,
+    datepicker,
+    luongCB,
+    chucvu,
+    gioLam
+  );
+  return nhanVien;
+}
+

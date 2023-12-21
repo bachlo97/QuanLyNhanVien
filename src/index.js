@@ -8,12 +8,14 @@ import {
   handleBlur,
   renderErrors,
   deleteErrors,
-  createNhanVien,
+  addNhanVien,
   luuDanhSachNhanVienLocal,
   layDanhSachNhanVienLocal,
   renderTable,
   init,
-  addClickEventForEditBtn
+  addClickEventForEditBtn,
+  createEmployee,
+  updateNhanVien,
 } from "./model/methods.js";
 import { Validator } from "./model/validator.js";
 export const dsnv = new EmployeesList();
@@ -47,6 +49,7 @@ export const mapperEmployee = {
   gioLam: "gioLam",
 }
 
+//! Part được cộng điểm 
 export const validationMapper = {
   tknv: (value) =>
     new Validator(value)
@@ -80,7 +83,7 @@ domId("btnThem").onclick = () => {
   domId("btnCapNhat").disabled = true;
   domId("btnThemNV").disabled = false;
   domId('tknv').disabled = false;
-  domId('email').disabled =false;
+  domId('email').disabled = false;
   domId('password').type = 'password'
 };
 
@@ -100,12 +103,16 @@ document.querySelector(".modal-content").onclick = (event) => {
 let buttonGroup = document.querySelectorAll("#myModal,#btnDong");
 buttonGroup.forEach((ele) => {
   ele.onclick = () => {
-    listEle.forEach((ele) => {
-      domId(mapper[ele.id]).innerHTML = "";
-      ele.value = "";
-    });
-    deleteErrors();
-  };
+    setTimeout(function () {
+      if (domId('myModal').style.display == 'none') {
+        listEle.forEach((ele) => {
+          domId(mapper[ele.id]).innerHTML = "";
+          ele.value = "";
+        });
+        deleteErrors();
+      };
+    }, 500);
+  }
 });
 
 // * add user
@@ -115,22 +122,10 @@ domId("btnThemNV").onclick = () => {
     return;
   }
 
-  let nv = {};
-  listEle.forEach((ele) => (nv[ele.id] = ele.value));
-  let { tknv, name, email, password, datepicker, luongCB, chucvu, gioLam } = nv;
-  let nhanVien = new Employee(
-    tknv,
-    name,
-    email,
-    password,
-    datepicker,
-    luongCB,
-    chucvu,
-    gioLam
-  );
+  let nhanVien = createEmployee()
 
   // lưu vào danhSachSinhVien
-  createNhanVien(nhanVien);
+  addNhanVien(nhanVien);
 
   listEle.forEach((ele) => (ele.value = ""));
 
@@ -142,7 +137,37 @@ domId("btnThemNV").onclick = () => {
   renderTable();
 
   addClickEventForEditBtn();
+  deleteErrors()
 };
-// deleteErrors()
-console.log(dsnv.danhSachNhanVien);
+
+
+//* Update user
+domId('btnCapNhat').onclick = () => {
+  let isMessage = Object.values(errors).every(function (item) {
+    return item.length === 0;
+  });
+
+  if (!isMessage) {
+    return
+  }
+  let nhanVien = createEmployee()
+  updateNhanVien(nhanVien)
+
+  luuDanhSachNhanVienLocal();
+
+  renderTable();
+  addClickEventForEditBtn();
+  alert('Cập nhật nhân viên thành công')
+  domId('btnCapNhat').disabled = true
+}
+
+//* find user
+domId('btnTimNV').onclick = () => {
+  const valueSearch = domId('searchName').value;
+
+  let danhSachLoaiNV = dsnv.findEmployeeType(valueSearch);
+
+  renderTable(danhSachLoaiNV);
+}
+
 addClickEventForEditBtn();

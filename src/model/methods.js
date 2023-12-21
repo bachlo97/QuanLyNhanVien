@@ -13,9 +13,6 @@ export function setTouches(value) {
   listEle.forEach((ele) => (touches[ele.id] = value));
 }
 
-function print() {
-  console.log(1234567);
-}
 export function domId(id) {
   return document.getElementById(id);
 }
@@ -117,7 +114,7 @@ export function luuDanhSachNhanVienLocal() {
 }
 
 export function layDanhSachNhanVienLocal() {
-  var res = localStorage.getItem("dsnv");
+  let res = localStorage.getItem("dsnv");
 
   // Kiểm tra xem thử localStorage có chứa dữ liệu của key: dsn hay không.
   if (res) {
@@ -132,9 +129,8 @@ export function renderTable(danhSachNhanVien) {
   if (!danhSachNhanVien) {
     danhSachNhanVien = dsnv.danhSachNhanVien;
   }
-  // f2 đổi tên toàn bộ biến.
   danhSachNhanVien.forEach(function (nv) {
-    // Chúng ta không thể truyền trực tiếp giá trị object sv vào function inline được.
+    // Chúng ta không thể truyền trực tiếp giá trị object nv vào function inline được.
     eleHtml += `
         <tr>
           <td>${nv.taiKhoan}</td>
@@ -156,12 +152,13 @@ export function renderTable(danhSachNhanVien) {
   });
 
   let tbody = document.querySelector("#tableDanhSach");
-
   tbody.innerHTML = eleHtml;
+    //?Gắn lại sự kiện onclick cho nút xóa & sửa vì sau khi render lại table thì các nút xóa ,sẽ được làm mới => mất đi onclick
+  addClickEventForBtn(danhSachNhanVien)
 }
 
 export function init() {
-  var danhSanhNhanVien = layDanhSachNhanVienLocal();
+  let danhSanhNhanVien = layDanhSachNhanVienLocal();
   dsnv.danhSachNhanVien = danhSanhNhanVien;
   renderTable();
 }
@@ -174,23 +171,16 @@ export function chinhSuaNhanVien(taiKhoan) {
 // == Xóa Sinh Viên ==
 export function xoaNhanVien(taiKhoan) {
   dsnv.deleteEmployee(taiKhoan);
-
-  // render lại table
   renderTable();
-
-  //Gắn lại sự kiện onclick cho nút xóa vì sau khi render lại table thì các nút xóa sẽ được làm mới => mất đi onclick
-  addClickEventForEditBtn()
-  // cập nhật lại storage
   luuDanhSachNhanVienLocal();
 }
 
 function renderDuLieuLenForm(nv) {
   listEle.forEach(function (ele) {
-    var thuocTinh = mapperEmployee[ele.id];
+    let thuocTinh = mapperEmployee[ele.id];
 
     ele.value = nv[thuocTinh];
 
-    // Chặn không cho phép người dùng chỉnh sửa maSinhVien.
     if (ele.id === "tknv" || ele.id === "email") {
       ele.disabled = true;
     }
@@ -198,9 +188,13 @@ function renderDuLieuLenForm(nv) {
 
 }
 
-export function addClickEventForEditBtn() {
+export function addClickEventForBtn(listEmployee) {
   if (dsnv.danhSachNhanVien.length == 0) return;
-  dsnv.danhSachNhanVien.forEach((item) => {
+  // if (!listEmployee) {
+  //   listEmployee = dsnv.danhSachNhanVien;
+  // }
+
+  listEmployee.forEach((item) => {
 
     domId(`btnSua${item.taiKhoan}`).onclick = () => {
       chinhSuaNhanVien(item.taiKhoan);

@@ -10,7 +10,7 @@ class EmployeesList {
   deleteEmployee(taiKhoan) {
     if (this.danhSachNhanVien.length === 0) return;
 
-    var newDSNV = this.danhSachNhanVien.filter((nv) => {
+    let newDSNV = this.danhSachNhanVien.filter((nv) => {
       return !(nv.taiKhoan === taiKhoan);
     });
 
@@ -38,7 +38,7 @@ class EmployeesList {
   }
 
   updateEmployee(nv){
-    var index = this.danhSachNhanVien.findIndex((nhanVien) => {
+    let index = this.danhSachNhanVien.findIndex((nhanVien) => {
       return nhanVien.taiKhoan === nv.taiKhoan;
     });
 

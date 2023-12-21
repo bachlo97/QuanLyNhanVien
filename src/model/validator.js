@@ -133,7 +133,7 @@ export class Validator {
 
     min(valueMin, message) {
         if (this.message) return this;
-        var regexNumber = /^-?\d*\.?\d+$/;
+        let regexNumber = /^-?\d*\.?\d+$/;
         // Nếu là số
         if (regexNumber.test(this.value.trim())) {
             if (Number(this.value) < valueMin) {
@@ -152,7 +152,7 @@ export class Validator {
     max(valueMax, message) {
         if (this.message) return this;
 
-        var regexNumber = /^-?\d*\.?\d+$/;
+        let regexNumber = /^-?\d*\.?\d+$/;
         // Nếu là số
         if (regexNumber.test(this.value.trim())) {
             if (Number(this.value) > valueMax) {

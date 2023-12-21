@@ -1,6 +1,4 @@
-// import Employee, {OVER_160H,OVER_176H,OVER_192H}  from "./model/employee.js";
 import EmployeesList from "./model/employees-list.js";
-import Employee from "./model/employee.js";
 import {
   setTouches,
   domId,
@@ -10,10 +8,8 @@ import {
   deleteErrors,
   addNhanVien,
   luuDanhSachNhanVienLocal,
-  layDanhSachNhanVienLocal,
   renderTable,
   init,
-  addClickEventForEditBtn,
   createEmployee,
   updateNhanVien,
 } from "./model/methods.js";
@@ -21,12 +17,6 @@ import { Validator } from "./model/validator.js";
 export const dsnv = new EmployeesList();
 export const touches = {};
 export const errors = {};
-// document.querySelector('img.ui-datepicker-trigger').onclick = function(){
-//   alert(123)
-// }
-// console.log(linkToFocus)
-// let inputToFocus = document.getElementById('inputToFocus');
-
 export const mapper = {
   tknv: "tbTKNV",
   name: "tbTen",
@@ -37,7 +27,6 @@ export const mapper = {
   chucvu: "tbChucVu",
   gioLam: "tbGiolam",
 };
-
 export const mapperEmployee = {
   tknv: "taiKhoan",
   name: "hoTen",
@@ -69,12 +58,11 @@ export const validationMapper = {
   gioLam: (value) =>
     new Validator(value).require().checkHour().min(80).max(200).getMessage(),
 };
+
 export let listEle = document.querySelectorAll(
   ".modal-body input.form-control:not([disabled]),.modal-body select.form-control,.form-control#tknv"
 );
 setTouches(false);
-
-console.log(touches);
 
 init();
 
@@ -123,8 +111,6 @@ domId("btnThemNV").onclick = () => {
   }
 
   let nhanVien = createEmployee()
-
-  // lưu vào danhSachSinhVien
   addNhanVien(nhanVien);
 
   listEle.forEach((ele) => (ele.value = ""));
@@ -136,7 +122,6 @@ domId("btnThemNV").onclick = () => {
 
   renderTable();
 
-  addClickEventForEditBtn();
   deleteErrors()
 };
 
@@ -156,7 +141,6 @@ domId('btnCapNhat').onclick = () => {
   luuDanhSachNhanVienLocal();
 
   renderTable();
-  addClickEventForEditBtn();
   alert('Cập nhật nhân viên thành công')
   domId('btnCapNhat').disabled = true
 }
@@ -169,5 +153,3 @@ domId('btnTimNV').onclick = () => {
 
   renderTable(danhSachLoaiNV);
 }
-
-addClickEventForEditBtn();

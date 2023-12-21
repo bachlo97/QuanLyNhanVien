@@ -31,7 +31,7 @@ class EmployeesList {
     }
 
     let listNhanVien = this.danhSachNhanVien.filter((nv) => {
-      return nv.xepLoaiNhanVien.toLowerCase().includes(loaiNV.toLowerCase());
+      return nv.xepLoaiNhanVien.toLowerCase() === loaiNV.toLowerCase();
     });
 
     return listNhanVien;
